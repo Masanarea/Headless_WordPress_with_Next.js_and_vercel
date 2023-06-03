@@ -9,7 +9,11 @@ import { getAllPostsForHome } from '../lib/api'
 import { CMS_NAME } from '../lib/constants'
 
 // カスタム
-import PostPreview from './post-preview'
+import PostPreview from '../components/main/post-preview'
+// すワイパー関連
+import { Swiper, SwiperSlide } from 'swiper/react';
+import SwiperCore, { Navigation } from 'swiper';
+SwiperCore.use([Navigation]);
 
 export default function Index({ allPosts: { edges }, preview }) {
   const heroPost = edges[0]?.node
@@ -21,8 +25,24 @@ export default function Index({ allPosts: { edges }, preview }) {
         <h2 className="mb-8 text-6xl md:text-7xl font-bold tracking-tighter leading-tight">
           More Stories
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8 mb-32">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8 mb-32"> */}
+          <Swiper
+            slidesPerView={3}
+            spaceBetween={10}
+            navigation
+            breakpoints={{
+              // when window width is >= 640px
+              640: {
+                slidesPerView: 3,
+              },
+              // when window width is >= 768px
+              768: {
+                slidesPerView: 6,
+              },
+            }}
+          >
           {edges.map((post) => (
+            <SwiperSlide key={post.slug}>
             <PostPreview
               key={post.slug}
               title={post.title}
@@ -32,8 +52,10 @@ export default function Index({ allPosts: { edges }, preview }) {
               slug={post.slug}
               excerpt={post.excerpt}
             />
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
+        {/* </div> */}
       </section>
       {/* <Head>
         <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
